@@ -104,13 +104,19 @@ spec:
         - sh
         - -c
         - |
-          until nc -z postgres-service 5432; do
+          until nc -z postgres 5432; do
             echo "Waiting for postgres..."
             sleep 2
           done
       volumes:
       - name: logs
         emptyDir: {}
+      - name: secrets-store
+        csi:
+          driver: secrets-store.csi.k8s.io
+          readOnly: true
+          volumeAttributes:
+            secretProviderClass: "finance-tracker-secrets-provider"
       containers:
       - name: backend
         image: oreakinodidi/finance_tracker_backend:v1.0
