@@ -85,7 +85,69 @@ az aks enable-addons `
 Write-Output "Azure Key Vault Secrets Provider addon enabled in AKS Cluster $env:AKS_NAME"
 
 # Store secrets in Azure Key Vault
-az keyvault create --name "finance-tracker-kv-$RAND" `
+# Generate a short random name (globally unique)
+$env:KV_NAME = "ft-kv-$(Get-Random -Minimum 1000 -Maximum 9999)"
+Write-Output "Key Vault name: $env:KV_NAME"
+
+az keyvault create --name $env:KV_NAME `
   --resource-group $env:RG_NAME `
   --location $env:LOCATION
-Write-Output "Azure Key Vault finance-tracker-kv-$RAND created in resource group $env:RG_NAME"
+Write-Output "Azure Key Vault $env:KV_NAME created in resource group $env:RG_NAME"
+
+# Get the Key Vault addon identity
+$env:IDENTITY_CLIENT_ID = az aks show `
+  --resource-group $env:RG_NAME `
+  --name $env:AKS_NAME `
+  --query "addonProfiles.azureKeyvaultSecretsProvider.identity.clientId" `
+  -o tsv
+
+Write-Output "Identity Client ID: $env:IDENTITY_CLIENT_ID"
+
+# Get Key Vault scope
+$env:KV_SCOPE = az keyvault show `
+  --name $env:KV_NAME `
+  --query "id" `
+  -o tsv
+
+# Assign Key Vault Secrets User role to the managed identity
+az role assignment create `
+  --role "Key Vault Secrets User" `
+  --assignee $env:IDENTITY_CLIENT_ID `
+  --scope $env:KV_SCOPE
+
+Write-Output "✅ Permissions granted to managed identity"
+
+# Get your Azure tenant ID
+$env:TENANT_ID = az account show --query "tenantId" -o tsv
+Write-Output "Tenant ID: $env:TENANT_ID"
+
+az keyvault secret set --vault-name $env:KV_NAME `
+  --name "DATABASE-URL" `
+  --value "your-url-here"
+
+az keyvault secret set --vault-name $env:KV_NAME `
+  --name "AZURE-AI-API-KEY" `
+  --value "your-key-here"
+
+az keyvault secret set `
+  --vault-name $env:KV_NAME `
+  --name "AZURE-AI-API-KEY" `
+  --value "your-url-here"
+
+az keyvault secret set `
+  --vault-name $env:KV_NAME `
+  --name "AZURE-OPENAI-KEY" `
+--value "your-url-here"
+
+az keyvault secret set `
+  --vault-name $env:KV_NAME `
+  --name "AZURE-SEARCH-API-KEY" `
+  --value "your-url-here"
+
+Write-Output "✅ Key Vault $env:KV_NAME created with secrets"
+
+# Add to .gitignore
+@"
+k8s/secrets.yaml
+k8s/secret-provider.yaml
+"@ | Add-Content .gitignore
