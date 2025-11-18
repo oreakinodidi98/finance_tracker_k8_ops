@@ -1,0 +1,27 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: finance-tracker-config
+  namespace: default
+data:
+  # Flask Configuration
+  FLASK_ENV: "development"
+  FLASK_DEBUG: "true"
+  
+  # Database Configuration
+  POSTGRES_DB: "finance_tracker"
+  POSTGRES_USER: "postgres"
+  
+  # Azure AI Configuration
+  AZURE_AI_CHAT_DEPLOYMENT_NAME: "gpt-4o"
+  AZURE_AI_EMBED_DEPLOYMENT_NAME: "text-embedding-3-small"
+  AZURE_AI_EMBED_DIMENSIONS: "1536"
+  CHAT_MODEL: "gpt-4o"
+  AZURE_SEARCH_MODEL: "text-embedding-3-small"
+  AZURE_AI_SEARCH_INDEX_NAME: "rag-vbddemos"
+
+  # Azure Endpoints
+  AZURE_AIPROJECT_ENDPOINT: "https://oa-ai-demo.services.ai.azure.com/api/projects/oa-ai-demo-project"
+  CHAT_MODEL_ENDPOINT: "https://oa-ai-demo.cognitiveservices.azure.com/openai/deployments/gpt-4o/chat/completions?api-version=2025-01-01-preview"
+  AZURE_OPENAI_ENDPOINT: "https://oa-ai-demo.openai.azure.com/"
+  AZURE_AI_SEARCH_ENDPOINT: "https://oa-ai-demo.search.windows.net"
