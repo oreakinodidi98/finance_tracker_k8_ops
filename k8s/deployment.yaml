@@ -17,9 +17,14 @@ spec:
       labels:
         app: postgres
     spec:
+      securityContext:
+        fsGroup: 999  # postgres user group
       containers:
       - name: postgres
         image: postgres:15-alpine
+        securityContext:
+          runAsUser: 999
+          runAsGroup: 999
         ports:
         - containerPort: 5432
           name: postgres
@@ -39,6 +44,8 @@ spec:
             secretKeyRef:
               name: finance-tracker-secrets
               key: POSTGRES_PASSWORD
+        - name: PGDATA
+          value: /var/lib/postgresql/data/pgdata  # - Use subdirectory
         volumeMounts:
         - name: postgres-storage
           mountPath: /var/lib/postgresql/data

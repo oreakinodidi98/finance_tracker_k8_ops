@@ -9,4 +9,4 @@ spec:
   resources:
     requests:
       storage: 10Gi
-  storageClassName: default  # Use 'azurefile' for Azure, 'gp2' for AWS
+  storageClassName: managed-csi # 'managed-csi' for Azure, 'gp2' for AWS
