@@ -119,7 +119,7 @@ spec:
             secretProviderClass: "finance-tracker-secrets-provider"
       containers:
       - name: backend
-        image: oreakinodidi/finance_tracker_backend:6d94dd1fe62dbfe08f82286e9cecb2baf9c8c2d1
+        image: oreakinodidi/finance_tracker_backend:95a59a0beee35ba9868f7cd7e539487c5380dc88
         volumeMounts:
         - name: logs
           mountPath: /app/logs
