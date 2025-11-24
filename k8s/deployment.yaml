@@ -172,7 +172,7 @@ spec:
     spec:
       containers:
       - name: frontend
-        image: oreakinodidi/finance_tracker_frontend:af4c51dd8396e87e5d7127e0e951dcbeb67b9caa
+        image: oreakinodidi/finance_tracker_frontend:6d94dd1fe62dbfe08f82286e9cecb2baf9c8c2d1
         ports:
         - containerPort: 80
           name: http
